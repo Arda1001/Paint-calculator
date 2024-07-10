@@ -101,13 +101,56 @@ export class UserInputHandler {
 
     async getObstacles(wallIndex: number): Promise<{ height: number, width: number }[]> {
         let obstacles: { height: number, width: number }[] = [];
+        const wallDimensions = await this.getWallDimensions(wallIndex);
+        const wallArea = wallDimensions.height * wallDimensions.width;
+        let remainingArea = wallArea;
+
         const hasObstacles = await this.askQuestion(`Does wall ${wallIndex} have obstacles (yes/no)? `);
 
         if (hasObstacles.toLowerCase() === 'yes') {
             const numberOfObstacles = parseInt(await this.askQuestion("Enter the number of obstacles: "));
+
             for (let j = 0; j < numberOfObstacles; j++) {
-                let obstacleHeight = parseFloat(await this.askQuestion(`Enter the height of obstacle ${j + 1} (in metres): `));
-                let obstacleWidth = parseFloat(await this.askQuestion(`Enter the width of obstacle ${j + 1} (in metres): `));
+                let obstacleHeight = 0;
+                let obstacleWidth = 0;
+                let obstacleArea = 0;
+
+                while (true) {
+                    try {
+                        obstacleHeight = parseFloat(await this.askQuestion(`Enter the height of obstacle ${j + 1} (in metres): `));
+                        if (obstacleHeight <= 0 || obstacleHeight > wallDimensions.height) {
+                            console.log("Obstacle height must be positive and less than or equal to the wall height.");
+                            continue;
+                        }
+                        break;
+                    }
+                    catch {
+                        console.log("Invalid input. Please enter a positive number.");
+                    }
+                }
+
+                while (true) {
+                    try {
+                        obstacleWidth = parseFloat(await this.askQuestion(`Enter the width of obstacle ${j + 1} (in metres): `));
+                        if (obstacleWidth <= 0 || obstacleWidth > wallDimensions.width) {
+                            console.log("Obstacle width must be positive and less than or equal to the wall width.");
+                            continue;
+                        }
+                        break;
+                    }
+                    catch {
+                        console.log("Invalid input. Please enter a positive number.");
+                    }
+                }
+
+                obstacleArea = obstacleHeight * obstacleWidth;
+
+                if (obstacleArea > remainingArea) {
+                    console.log("Obstacle area exceeds the remaining wall area. Please re-enter the obstacle dimensions.");
+                    continue;
+                }
+
+                remainingArea -= obstacleArea;
                 obstacles.push({ height: obstacleHeight, width: obstacleWidth });
             }
         }
