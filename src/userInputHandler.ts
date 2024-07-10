@@ -17,8 +17,8 @@ export class UserInputHandler {
             try {
                 const input = await this.askQuestion("Enter the number of walls: ");
                 const numberOfWalls = parseInt(input);
-                if (numberOfWalls <= 0) {
-                    console.log("You must have at least one wall to paint.");
+                if (isNaN(numberOfWalls) || numberOfWalls <= 0) {
+                    console.log("You must have at least one wall to paint and it must be a valid number.");
                     continue;
                 }
                 return numberOfWalls;
@@ -34,8 +34,8 @@ export class UserInputHandler {
             try {
                 const input = await this.askQuestion("Enter the number of coats: ");
                 const numberOfCoats = parseInt(input);
-                if (numberOfCoats <= 0) {
-                    console.log("Must have at least one coat of paint.");
+                if (isNaN(numberOfCoats) || numberOfCoats <= 0) {
+                    console.log("Must have at least one coat of paint and it must be a valid number.");
                     continue;
                 }
                 return numberOfCoats;
@@ -70,8 +70,8 @@ export class UserInputHandler {
             try {
                 const input = await this.askQuestion(`Enter the height of wall ${wallIndex} (in metres): `);
                 height = parseFloat(input);
-                if (height <= 0) {
-                    console.log("Height must be positive.");
+                if (isNaN(height) || height <= 0) {
+                    console.log("Height must be a positive number.");
                     continue;
                 }
                 break;
@@ -85,8 +85,8 @@ export class UserInputHandler {
             try {
                 const input = await this.askQuestion(`Enter the width of wall ${wallIndex} (in metres): `);
                 width = parseFloat(input);
-                if (width <= 0) {
-                    console.log("Width must be positive.");
+                if (isNaN(width) || width <= 0) {
+                    console.log("Width must be a positive number.");
                     continue;
                 }
                 break;
@@ -117,8 +117,8 @@ export class UserInputHandler {
                 while (true) {
                     try {
                         obstacleHeight = parseFloat(await this.askQuestion(`Enter the height of obstacle ${j + 1} (in metres): `));
-                        if (obstacleHeight <= 0 || obstacleHeight > wallHeight) {
-                            console.log("Obstacle height must be positive and less than or equal to the wall height.");
+                        if (isNaN(obstacleHeight) || obstacleHeight <= 0 || obstacleHeight > wallHeight) {
+                            console.log("Obstacle height must be a positive number and less than or equal to the wall height.");
                             continue;
                         }
                         break;
@@ -131,8 +131,8 @@ export class UserInputHandler {
                 while (true) {
                     try {
                         obstacleWidth = parseFloat(await this.askQuestion(`Enter the width of obstacle ${j + 1} (in metres): `));
-                        if (obstacleWidth <= 0 || obstacleWidth > wallWidth) {
-                            console.log("Obstacle width must be positive and less than or equal to the wall width.");
+                        if (isNaN(obstacleWidth) || obstacleWidth <= 0 || obstacleWidth > wallWidth) {
+                            console.log("Obstacle width must be a positive number and less than or equal to the wall width.");
                             continue;
                         }
                         break;
@@ -158,14 +158,15 @@ export class UserInputHandler {
     }
 
     async getBrandChoice(brands: string[]): Promise<string> {
+        const lowerCaseBrands = brands.map(brand => brand.toLowerCase());
         while (true) {
             try {
                 const input = (await this.askQuestion(`Choose a brand (${brands.join(', ')}): `)).toLowerCase();
-                if (!brands.includes(input)) {
+                if (!lowerCaseBrands.includes(input)) {
                     console.log(`Invalid brand. Please choose from the following: ${brands.join(', ')}`);
                     continue;
                 }
-                return input;
+                return brands[lowerCaseBrands.indexOf(input)];
             }
             catch {
                 console.log("Invalid input. Please choose a valid brand.");
