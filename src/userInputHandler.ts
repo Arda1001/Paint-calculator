@@ -49,7 +49,7 @@ export class UserInputHandler {
     async getColour(): Promise<string> {
         while (true) {
             try {
-                const input = await this.askQuestion(`Enter the colour of the paint (${this.validColours.join(', ')}): `).toLowerCase();
+                const input = (await this.askQuestion(`Enter the colour of the paint (${this.validColours.join(', ')}): `)).toLowerCase();
                 if (!this.validColours.includes(input)) {
                     console.log(`Invalid colour. Please choose from the following: ${this.validColours.join(', ')}`);
                     continue;
