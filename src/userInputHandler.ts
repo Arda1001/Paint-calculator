@@ -99,10 +99,9 @@ export class UserInputHandler {
         return { height, width };
     }
 
-    async getObstacles(wallIndex: number): Promise<{ height: number, width: number }[]> {
+    async getObstacles(wallIndex: number, wallHeight: number, wallWidth: number): Promise<{ height: number, width: number }[]> {
         let obstacles: { height: number, width: number }[] = [];
-        const wallDimensions = await this.getWallDimensions(wallIndex);
-        const wallArea = wallDimensions.height * wallDimensions.width;
+        const wallArea = wallHeight * wallWidth;
         let remainingArea = wallArea;
 
         const hasObstacles = await this.askQuestion(`Does wall ${wallIndex} have obstacles (yes/no)? `);
@@ -118,7 +117,7 @@ export class UserInputHandler {
                 while (true) {
                     try {
                         obstacleHeight = parseFloat(await this.askQuestion(`Enter the height of obstacle ${j + 1} (in metres): `));
-                        if (obstacleHeight <= 0 || obstacleHeight > wallDimensions.height) {
+                        if (obstacleHeight <= 0 || obstacleHeight > wallHeight) {
                             console.log("Obstacle height must be positive and less than or equal to the wall height.");
                             continue;
                         }
@@ -132,7 +131,7 @@ export class UserInputHandler {
                 while (true) {
                     try {
                         obstacleWidth = parseFloat(await this.askQuestion(`Enter the width of obstacle ${j + 1} (in metres): `));
-                        if (obstacleWidth <= 0 || obstacleWidth > wallDimensions.width) {
+                        if (obstacleWidth <= 0 || obstacleWidth > wallWidth) {
                             console.log("Obstacle width must be positive and less than or equal to the wall width.");
                             continue;
                         }
@@ -158,7 +157,24 @@ export class UserInputHandler {
         return obstacles;
     }
 
+    async getBrandChoice(brands: string[]): Promise<string> {
+        while (true) {
+            try {
+                const input = (await this.askQuestion(`Choose a brand (${brands.join(', ')}): `)).toLowerCase();
+                if (!brands.includes(input)) {
+                    console.log(`Invalid brand. Please choose from the following: ${brands.join(', ')}`);
+                    continue;
+                }
+                return input;
+            }
+            catch {
+                console.log("Invalid input. Please choose a valid brand.");
+            }
+        }
+    }
+
     close(): void {
         this.rl.close();
     }
 }
+
