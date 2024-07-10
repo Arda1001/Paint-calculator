@@ -10,6 +10,8 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@babel/preset-typescript": "^7.24.7",
+    "ts-jest": "^29.2.1",
     "typescript": "^5.5.3"
   }
 }
