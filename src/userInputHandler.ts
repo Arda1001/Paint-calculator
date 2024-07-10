@@ -124,6 +124,7 @@ export class UserInputHandler {
                         console.log("Number of obstacles must be a valid positive integer.");
                         continue;
                     }
+
                     for (let j = 0; j < numberOfObstacles; j++) {
                         let obstacleHeight = 0;
                         let obstacleWidth = 0;
@@ -163,6 +164,7 @@ export class UserInputHandler {
 
                         if (obstacleArea > remainingArea) {
                             console.log("Obstacle area exceeds the remaining wall area. Please re-enter the obstacle dimensions.");
+                            j--; // Decrement j to repeat the input for this obstacle
                             continue;
                         }
 
@@ -179,7 +181,6 @@ export class UserInputHandler {
 
         return obstacles;
     }
-
 
     async getBrandChoice(brands: string[]): Promise<string> {
         const lowerCaseBrands = brands.map(brand => brand.toLowerCase());
