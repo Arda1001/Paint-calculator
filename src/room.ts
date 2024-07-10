@@ -1,4 +1,3 @@
-// Room.ts
 import { Wall } from './wall';
 
 export class Room {
