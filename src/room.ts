@@ -2,15 +2,18 @@ import { Wall } from './wall';
 
 export class Room {
     private walls: Wall[];
-    private paintCoverage: number;
+    private paintCoverage: number = 0;
     private numberOfCoats: number;
     private colour: string;
 
-    constructor(paintCoverage: number, numberOfCoats: number, colour: string) {
+    constructor(numberOfCoats: number, colour: string) {
         this.walls = [];
-        this.paintCoverage = paintCoverage;
         this.numberOfCoats = numberOfCoats;
         this.colour = colour;
+    }
+
+    public setPaintCoverage(coverage: number): void {
+        this.paintCoverage = coverage;
     }
 
     public addWall(height: number, width: number, obstacles: { height: number, width: number }[]): void {
@@ -22,10 +25,11 @@ export class Room {
     }
 
     public getPaintNeeded(): number {
-        return this.getTotalArea() / this.paintCoverage;
+        return this.paintCoverage > 0 ? this.getTotalArea() / this.paintCoverage : 0;
     }
 
     public getColour(): string {
         return this.colour;
     }
 }
+
