@@ -104,58 +104,82 @@ export class UserInputHandler {
         const wallArea = wallHeight * wallWidth;
         let remainingArea = wallArea;
 
-        const hasObstacles = await this.askQuestion(`Does wall ${wallIndex} have obstacles (yes/no)? `);
+        let hasObstacles: string;
+        while (true) {
+            hasObstacles = (await this.askQuestion(`Does wall ${wallIndex} have obstacles (yes/no)? `)).toLowerCase();
+            if (hasObstacles === 'yes' || hasObstacles === 'no') {
+                break;
+            }
+            else {
+                console.log("Invalid input. Please enter 'yes' or 'no'.");
+            }
+        }
 
-        if (hasObstacles.toLowerCase() === 'yes') {
-            const numberOfObstacles = parseInt(await this.askQuestion("Enter the number of obstacles: "));
+        if (hasObstacles === 'yes') {
+            while (true) {
+                try {
+                    const input = await this.askQuestion("Enter the number of obstacles: ");
+                    const numberOfObstacles = parseInt(input);
+                    if (isNaN(numberOfObstacles) || numberOfObstacles <= 0) {
+                        console.log("Number of obstacles must be a valid positive integer.");
+                        continue;
+                    }
+                    for (let j = 0; j < numberOfObstacles; j++) {
+                        let obstacleHeight = 0;
+                        let obstacleWidth = 0;
+                        let obstacleArea = 0;
 
-            for (let j = 0; j < numberOfObstacles; j++) {
-                let obstacleHeight = 0;
-                let obstacleWidth = 0;
-                let obstacleArea = 0;
+                        while (true) {
+                            try {
+                                const input = await this.askQuestion(`Enter the height of obstacle ${j + 1} (in metres): `);
+                                obstacleHeight = parseFloat(input);
+                                if (isNaN(obstacleHeight) || obstacleHeight <= 0 || obstacleHeight > wallHeight) {
+                                    console.log("Obstacle height must be a positive number and less than or equal to the wall height.");
+                                    continue;
+                                }
+                                break;
+                            }
+                            catch {
+                                console.log("Invalid input. Please enter a positive number.");
+                            }
+                        }
 
-                while (true) {
-                    try {
-                        obstacleHeight = parseFloat(await this.askQuestion(`Enter the height of obstacle ${j + 1} (in metres): `));
-                        if (isNaN(obstacleHeight) || obstacleHeight <= 0 || obstacleHeight > wallHeight) {
-                            console.log("Obstacle height must be a positive number and less than or equal to the wall height.");
+                        while (true) {
+                            try {
+                                const input = await this.askQuestion(`Enter the width of obstacle ${j + 1} (in metres): `);
+                                obstacleWidth = parseFloat(input);
+                                if (isNaN(obstacleWidth) || obstacleWidth <= 0 || obstacleWidth > wallWidth) {
+                                    console.log("Obstacle width must be a positive number and less than or equal to the wall width.");
+                                    continue;
+                                }
+                                break;
+                            }
+                            catch {
+                                console.log("Invalid input. Please enter a positive number.");
+                            }
+                        }
+
+                        obstacleArea = obstacleHeight * obstacleWidth;
+
+                        if (obstacleArea > remainingArea) {
+                            console.log("Obstacle area exceeds the remaining wall area. Please re-enter the obstacle dimensions.");
                             continue;
                         }
-                        break;
+
+                        remainingArea -= obstacleArea;
+                        obstacles.push({ height: obstacleHeight, width: obstacleWidth });
                     }
-                    catch {
-                        console.log("Invalid input. Please enter a positive number.");
-                    }
+                    break;
                 }
-
-                while (true) {
-                    try {
-                        obstacleWidth = parseFloat(await this.askQuestion(`Enter the width of obstacle ${j + 1} (in metres): `));
-                        if (isNaN(obstacleWidth) || obstacleWidth <= 0 || obstacleWidth > wallWidth) {
-                            console.log("Obstacle width must be a positive number and less than or equal to the wall width.");
-                            continue;
-                        }
-                        break;
-                    }
-                    catch {
-                        console.log("Invalid input. Please enter a positive number.");
-                    }
+                catch {
+                    console.log("Invalid input. Please enter a positive number.");
                 }
-
-                obstacleArea = obstacleHeight * obstacleWidth;
-
-                if (obstacleArea > remainingArea) {
-                    console.log("Obstacle area exceeds the remaining wall area. Please re-enter the obstacle dimensions.");
-                    continue;
-                }
-
-                remainingArea -= obstacleArea;
-                obstacles.push({ height: obstacleHeight, width: obstacleWidth });
             }
         }
 
         return obstacles;
     }
+
 
     async getBrandChoice(brands: string[]): Promise<string> {
         const lowerCaseBrands = brands.map(brand => brand.toLowerCase());
