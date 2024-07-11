@@ -30,7 +30,7 @@ export class PaintCalculator {
 
         console.log("Available brands and their details:");
         brands.forEach(brand => {
-            console.log(`Brand: ${brand.name}, Coverage: ${brand.coveragePerLitre} m²/L, Price per litre: £${brand.pricePerLitre}`);
+            console.log(`Brand: ${brand.name}, Coverage: ${brand.coveragePerLitre} m²/L, Price per litre: £${brand.pricePerLitre.toFixed(2)}`);
         });
 
         const chosenBrandName = await this.inputHandler.getBrandChoice(brands.map(brand => brand.name));
