@@ -16,10 +16,11 @@ export class PaintBrand {
         ];
     }
 
-    public calculateCost(volumeNeeded: number): { cans: number, cost: number } {
+    public calculateCost(volumeNeeded: number): { cans: number, cost: number, canSizes: { volume: number, price: number }[] } {
         let totalCost = 0;
         let totalCans = 0;
         let remainingVolume = volumeNeeded;
+        let usedCanSizes: { volume: number, price: number }[] = [];
 
         this.canSizes.sort((a, b) => b.volume - a.volume); // Sort cans by volume descending
 
@@ -28,6 +29,7 @@ export class PaintBrand {
                 remainingVolume -= can.volume;
                 totalCost += can.price;
                 totalCans++;
+                usedCanSizes.push(can);
             }
         }
 
@@ -35,8 +37,10 @@ export class PaintBrand {
             let smallestCan = this.canSizes[this.canSizes.length - 1];
             totalCost += smallestCan.price;
             totalCans++;
+            usedCanSizes.push(smallestCan);
         }
 
-        return { cans: totalCans, cost: totalCost };
+        return { cans: totalCans, cost: totalCost, canSizes: usedCanSizes };
     }
 }
+

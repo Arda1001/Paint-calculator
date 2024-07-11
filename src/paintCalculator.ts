@@ -17,7 +17,6 @@ export class PaintCalculator {
         const numberOfWalls = await this.inputHandler.getNumberOfWalls();
         const numberOfCoats = await this.inputHandler.getNumberOfCoats();
         const colour = await this.inputHandler.getColour();
-
         const room = new Room(numberOfCoats, colour);
 
         for (let i = 0; i < numberOfWalls; i++) {
@@ -27,29 +26,38 @@ export class PaintCalculator {
         }
 
         const totalArea = room.getTotalArea();
+        const brands = this.brandHandler.getBrands();
 
-        const brands = this.brandHandler.getBrands().map(brand => brand.name);
-        console.log(`Available brands: ${brands.join(', ')}`);
-        const chosenBrandName = await this.inputHandler.getBrandChoice(brands);
-        const chosenBrand = this.brandHandler.getBrands().find(brand => brand.name.toLowerCase() === chosenBrandName.toLowerCase());
+        console.log("Available brands and their details:");
+        brands.forEach(brand => {
+            console.log(`Brand: ${brand.name}, Coverage: ${brand.coveragePerLitre} m²/L, Prices: 1L - £${brand.canSizes.find(size => size.volume === 1)?.price}, 2.5L - £${brand.canSizes.find(size => size.volume === 2.5)?.price}, 5L - £${brand.canSizes.find(size => size.volume === 5)?.price}, 10L - £${brand.canSizes.find(size => size.volume === 10)?.price}`);
+        });
 
-        if (!chosenBrand) {
-            console.log("Error: Brand not found.");
-            return;
+        let minCost = Infinity;
+        let bestBrand = '';
+        let bestNumberOfCans = 0;
+        let bestCanSizes: { volume: number, price: number }[] = [];
+
+        for (const brand of brands) {
+            const paintNeeded = totalArea / brand.coveragePerLitre;
+            const { cans, cost, canSizes } = brand.calculateCost(paintNeeded);
+
+            if (cost < minCost) {
+                minCost = cost;
+                bestBrand = brand.name;
+                bestNumberOfCans = cans;
+                bestCanSizes = canSizes;
+            }
         }
 
-        room.setPaintCoverage(chosenBrand.coveragePerLitre);
-
-        const volumeNeeded = room.getPaintNeeded();
-        const { cans, cost } = chosenBrand.calculateCost(volumeNeeded);
-
-        console.log(`Total area to paint (for ${numberOfCoats} coats): ${totalArea} square metres`);
-        console.log(`You will need approximately ${volumeNeeded.toFixed(2)} litres of paint.`);
+        console.log(`\nTotal area to paint (for ${numberOfCoats} coats): ${totalArea} square metres`);
+        console.log(`You will need approximately ${(totalArea / brands[0].coveragePerLitre).toFixed(2)} litres of paint.`);
         console.log(`Colour chosen: ${colour}`);
-        console.log(`Most cost-efficient solution:`);
-        console.log(`Brand: ${chosenBrand.name}`);
-        console.log(`Number of cans: ${cans}`);
-        console.log(`Total cost: £${cost.toFixed(2)}`);
+        console.log('Most cost-efficient solution:');
+        console.log(`Brand: ${bestBrand}`);
+        console.log(`Number of cans: ${bestNumberOfCans}`);
+        console.log(`Can sizes: ${bestCanSizes.map(can => `${can.volume}L`).join(', ')}`);
+        console.log(`Total cost: £${minCost.toFixed(2)}`);
 
         this.inputHandler.close();
     }
