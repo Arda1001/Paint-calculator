@@ -15,23 +15,4 @@ export class BrandHandler {
         return this.brands;
     }
 
-    public getMostCostEfficientBrand(totalArea: number, numberOfCoats: number): { brand: PaintBrand, cans: number, cost: number, volumeNeeded: number } {
-        let bestBrand = this.brands[0];
-        let bestCost = Number.MAX_VALUE;
-        let bestCans = 0;
-        let bestVolumeNeeded = 0;
-
-        for (let brand of this.brands) {
-            const volumeNeeded = (totalArea * numberOfCoats) / brand.coveragePerLitre;
-            const { cans, cost } = brand.calculateCost(volumeNeeded);
-            if (cost < bestCost) {
-                bestCost = cost;
-                bestBrand = brand;
-                bestCans = cans;
-                bestVolumeNeeded = volumeNeeded;
-            }
-        }
-
-        return { brand: bestBrand, cans: bestCans, cost: bestCost, volumeNeeded: bestVolumeNeeded };
-    }
 }
