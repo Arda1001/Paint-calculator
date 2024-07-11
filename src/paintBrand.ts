@@ -67,6 +67,7 @@ export class PaintBrand {
 // remainingVolume = 25 - 10 = 15
 // totalCost = 0 + 16 = 16
 // totalCans = 0 + 1 = 1
+
 // Second 10-litre can:
 
 // remainingVolume = 15 - 10 = 5

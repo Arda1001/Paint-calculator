@@ -62,6 +62,7 @@ export class UserInputHandler {
         }
     }
 
+    // Get the dimensions of the wall
     async getWallDimensions(wallIndex: number): Promise<{ height: number, width: number }> {
         let height = 0;
         let width = 0;
@@ -99,6 +100,7 @@ export class UserInputHandler {
         return { height, width };
     }
 
+    // Get the dimensions of any obstacles on the wall
     async getObstacles(wallIndex: number, wallHeight: number, wallWidth: number): Promise<{ height: number, width: number }[]> {
         let obstacles: { height: number, width: number }[] = [];
         const wallArea = wallHeight * wallWidth;
@@ -115,6 +117,7 @@ export class UserInputHandler {
             }
         }
 
+        // If there are no obstacles, return an empty array
         if (hasObstacles === 'yes') {
             while (true) {
                 try {
@@ -199,6 +202,7 @@ export class UserInputHandler {
         }
     }
 
+    // Close the readline interface
     close(): void {
         this.rl.close();
     }

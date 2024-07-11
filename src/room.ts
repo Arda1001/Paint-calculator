@@ -20,6 +20,7 @@ export class Room {
         this.walls.push(new Wall(height, width, obstacles));
     }
 
+    // Calculate the total area of all walls in the room
     public getTotalArea(): number {
         return this.walls.reduce((total, wall) => total + wall.getArea(), 0) * this.numberOfCoats;
     }

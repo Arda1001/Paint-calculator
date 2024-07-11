@@ -3,6 +3,7 @@ import { PaintBrand } from './paintBrand';
 export class BrandHandler {
     private brands: PaintBrand[];
 
+    // Hardcoded paint brands
     constructor() {
         this.brands = [
             new PaintBrand("Leyland", 1.60, 14, { litre: 1.60, twoPointFive: 4.00, five: 8.00, ten: 16.00 }),

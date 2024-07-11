@@ -11,6 +11,7 @@ export class PaintCalculator {
         this.brandHandler = new BrandHandler();
     }
 
+    // Main function to run the paint calculator
     public async run(): Promise<void> {
         console.log("Welcome to the Paint Calculator!");
 
@@ -44,6 +45,7 @@ export class PaintCalculator {
         const paintNeeded = totalArea / chosenBrand.coveragePerLitre;
         const { cans, cost, canSizes } = chosenBrand.calculateCost(paintNeeded);
 
+        // Output the results
         console.log(`\nTotal area to paint (for ${numberOfCoats} coats): ${totalArea} square metres`);
         console.log(`You will need approximately ${paintNeeded.toFixed(2)} litres of paint.`);
         console.log(`Colour chosen: ${colour}`);
